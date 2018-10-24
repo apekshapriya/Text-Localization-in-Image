@@ -41,6 +41,16 @@ input in further architecture. The following layers is used in the whole archite
 The model architecture is shown below:<br>
     ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/model.png)
     
+### Optimizer and Loss function
     
-        
-   
+The optimizer for gradient descent used is "sgd" with learning rate - 0.01. The loss function used is "binary cross-entropy"
+
+The model is trained and saved as model.hd5 file. The trained model is used to predict the test images. An example of it is shown in the result section given below, <br>
+
+### Results
+
+Test Input Image
+![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/test_img.jpeg)
+
+Predicted Image
+![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/result_img.png)
