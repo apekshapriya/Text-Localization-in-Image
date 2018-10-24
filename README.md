@@ -61,9 +61,9 @@ Here the predicted image has masked pixels in the text area
 
 ### To-dos
 
-Try the model with L1 loss regularizer to increase the validation accuracy.
-Try Batch Normalization on the Network architecture.
-Create bounding boxes over the 0-pixeleted area in a rectangle form for easy interpretation of result.
+Try the model with L1 loss regularizer to increase the validation accuracy.<br>
+Try Batch Normalization on the Network architecture.<br>
+Create bounding boxes over the 0-pixeleted area in a rectangle form for easy interpretation of result.<br>
 
 ### Reference
 https://arxiv.org/pdf/1603.09423.pdf<br>
