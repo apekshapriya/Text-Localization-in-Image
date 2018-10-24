@@ -7,6 +7,6 @@ Implemented the paper "Accurate Text Localization in Natural Image with Cascaded
 ## Dataset Creation
 The dataset is created by following these steps-          
     Input images are RGB images consiting of text within it.<br>
-    The textual area in the input image is bounded by bounding boxes using an app called labelimg and has been manually tagged.
-    Label images are formed using these tagged input image, making the text area masked as pixel-value 0 and 
+    The textual area in the input image is bounded by bounding boxes using an app called labelimg and has been manually tagged.<br>
+    Label images are formed using these tagged input image, making the text area masked as pixel-value 0 and <br>
     rest of the area as pixel-value 1. So the labelled images have pixel values 0 and 1.
