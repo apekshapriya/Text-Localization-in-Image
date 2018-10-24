@@ -66,5 +66,5 @@ Try Batch Normalization on the Network architecture.
 Create bounding boxes over the 0-pixeleted area in a rectangle form for easy interpretation of result.
 
 ### Reference
-https://arxiv.org/pdf/1603.09423.pdf
+https://arxiv.org/pdf/1603.09423.pdf<br>
 https://keras.io/layers/convolutional/
