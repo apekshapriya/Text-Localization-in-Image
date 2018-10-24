@@ -49,8 +49,10 @@ The model is trained and saved as model.hd5 file. The trained model is used to p
 
 ### Results
 
-Test Input Image
+Test Input Image:<br>
+
 ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/test_img.jpeg)
 
-Predicted Image
+Predicted Image: <br>
+
 ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/result_img.png)
