@@ -56,3 +56,15 @@ Test Input Image:<br>
 Predicted Image: <br>
 
 ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/result_img.png)
+
+Here the predicted image has masked pixels in the text area
+
+### To-dos
+
+Try the model with L1 loss regularizer to increase the validation accuracy.
+Try Batch Normalization on the Network architecture.
+Create bounding boxes over the 0-pixeleted area in a rectangle form for easy interpretation of result.
+
+### Reference
+https://arxiv.org/pdf/1603.09423.pdf
+https://keras.io/layers/convolutional/
