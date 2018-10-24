@@ -5,7 +5,9 @@ Text Localization in image, ie detection of "Blocks of Text" from an image.
 Implemented the paper "Accurate Text Localization in Natural Image with Cascaded Convolutional Text Network"
 
 ## Dataset Creation
+
 The dataset is created by following these steps-  
+
 ### Raw Data
     The dataset consists of images and their corresponding xml files. <br>
     Input images are RGB images consiting of text within it. <br>
@@ -17,3 +19,28 @@ The dataset is created by following these steps-
     rest of the area as pixel-value 1. So the labelled images have pixel values 0 and 1.
     
     Example- <br>
+    Input Image: <br>
+    ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/img_input.jpg)
+    
+    Labelled Image: <br>
+    ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/img_11.jpg)
+   
+## Model Architecture
+Takes the block 4's output from the standard vgg-16 network and uses this as
+input in further architecture. The following layers is used in the whole architecture:<br>
+    1) Block4_pool output of vgg16-net<br>
+    2) (3,3), (3,7) and (7,3) convolution is applied on 1 parallely.<br>
+    3) The output of above three convolution is added and forms the next layer<br>
+    4) (2,2) pooling on 4<br>
+    5) (1,1) convolution on 4<br>
+    6) (1,1) convolution on 5<br>
+    7) up-sampling layer(deconvolution) so as to retain the original image size.<br>
+        (6 up-sampling layers has been used sequentially. The last up-sampling layer has activation sigmoid to get<br>
+        pixel from 0-1)<br>
+
+The model architecture is shown below:<br>
+    ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/model.png)
+    
+    
+        
+   
