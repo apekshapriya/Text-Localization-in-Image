@@ -17,6 +17,7 @@ from keras.utils import plot_model
 from keras.models import load_model
 from keras.callbacks import ModelCheckpoint, TensorBoard
 import tensorflow as tf
+from keras.regularizers import l1
 
 gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.65)
 sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
@@ -97,39 +98,50 @@ def define_cascaded_architecture():
     model = VGG16(weights='imagenet', include_top=False)
     block4 = model.get_layer(name='block4_pool').output
     partial_vgg = Model(model.input, block4)
-    conv_tensor1_padded = keras.layers.ZeroPadding2D((1, 1),
-                                        name='conv15_1_zp')(partial_vgg.output)
+    partial_vgg_norm = layers.BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001, center=True, scale=True,
+                                                       beta_initializer='zeros', gamma_initializer='ones',
+                                                       moving_mean_initializer='zeros',
+                                                       moving_variance_initializer='ones')(partial_vgg.output)
+    conv_tensor1_padded = layers.ZeroPadding2D((1, 1),
+                                        name='conv15_1_zp')(partial_vgg_norm)
 
-    conv_tensor_1 = keras.layers.Conv2D(512, (3, 3),
-                                        activation='relu',
+    conv_tensor_1 = layers.Conv2D(512, (3, 3),
+                                        activation='relu', kernel_regularizer=l1(0.001),
                                         name='conv_15_1')(conv_tensor1_padded)
 
-    conv_tensor2_padded = keras.layers.ZeroPadding2D((1, 3),
-                                        name='conv15_2_zp')(partial_vgg.output)
+    conv_tensor2_padded = layers.ZeroPadding2D((1, 3),
+                                        name='conv15_2_zp')(partial_vgg_norm)
 
-    conv_tensor_2 = keras.layers.Conv2D(512, (3, 7),
-                                        activation='relu',
+    conv_tensor_2 = layers.Conv2D(512, (3, 7),
+                                        activation='relu', kernel_regularizer=l1(0.001),
                                         name='conv_15_2')(conv_tensor2_padded)
 
-    conv_tensor3_padded = keras.layers.ZeroPadding2D((3, 1),
-                                        name='conv15_3_zp')(partial_vgg.output)
+    conv_tensor3_padded = layers.ZeroPadding2D((3, 1),
+                                        name='conv15_3_zp')(partial_vgg_norm)
 
-    conv_tensor_3 =  keras.layers.Conv2D(512, (7, 3), 
-                                         activation='relu', 
-                                         name='conv_15_3')(conv_tensor3_padded)
+    conv_tensor_3 = layers.Conv2D(512, (7, 3),
+                                        activation='relu', kernel_regularizer=l1(0.001),
+                                        name='conv_15_3')(conv_tensor3_padded)
 
-    sigma = keras.layers.Add()([conv_tensor_1, conv_tensor_2, conv_tensor_3])
-    sigma_pool = keras.layers.MaxPool2D((2,2))(sigma)
+    sigma = layers.Add()([conv_tensor_1, conv_tensor_2, conv_tensor_3])
 
-    fully_conv_layer1 = layers.Conv2D(512, (1,1), strides=(1, 1), padding='same')(sigma_pool)
-    fully_conv_layer2 = layers.Conv2D(512, (1,1), strides=(1, 1), padding='same')(fully_conv_layer1)
+    normal_sigma = layers.BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001, center=True, scale=True,
+                                        beta_initializer='zeros', gamma_initializer='ones',
+                                        moving_mean_initializer='zeros', moving_variance_initializer='ones')(sigma)
 
-    transposed_conv1 = keras.layers.Conv2DTranspose(512, (4,4), strides=(2, 2), padding='same')(fully_conv_layer2)
-    transposed_conv3 = keras.layers.Conv2DTranspose(256, (4,4), strides=(2, 2), padding='same')(transposed_conv1)
-    transposed_conv4 = keras.layers.Conv2DTranspose(128, (4,4), strides=(2, 2), padding='same')(transposed_conv3)
-    transposed_conv5 = keras.layers.Conv2DTranspose(64, (4,4), strides=(2, 2), padding='same')(transposed_conv4)
-    transposed_conv6 = keras.layers.Conv2DTranspose(3, (4,4), strides=(2, 2), padding='same')(transposed_conv5)
-    transposed_conv7 = keras.layers.Conv2DTranspose(3, (1,1), strides=(1, 1),activation='sigmoid', padding='same')\
+    dropout = layers.Dropout(0.15, noise_shape=None, seed=1)(normal_sigma)
+
+    sigma_pool = layers.MaxPool2D((2, 2))(dropout)
+
+    fully_conv_layer1 = layers.Conv2D(512, (1, 1), strides=(1, 1), padding='same')(sigma_pool)
+    fully_conv_layer2 = layers.Conv2D(512, (1, 1), strides=(1, 1), padding='same')(fully_conv_layer1)
+
+    transposed_conv1 = layers.Conv2DTranspose(512, (4, 4), strides=(2, 2), padding='same')(fully_conv_layer2)
+    transposed_conv3 = layers.Conv2DTranspose(256, (4, 4), strides=(2, 2), padding='same')(transposed_conv1)
+    transposed_conv4 = layers.Conv2DTranspose(128, (4, 4), strides=(2, 2), padding='same')(transposed_conv3)
+    transposed_conv5 = layers.Conv2DTranspose(64, (4, 4), strides=(2, 2), padding='same')(transposed_conv4)
+    transposed_conv6 = layers.Conv2DTranspose(3, (4, 4), strides=(2, 2), padding='same')(transposed_conv5)
+    transposed_conv7 = layers.Conv2DTranspose(3, (1, 1), strides=(1, 1), activation='sigmoid', padding='same') \
         (transposed_conv6)
 
     embedding_model = Model(inputs=partial_vgg.input, outputs=transposed_conv7)
@@ -172,8 +184,8 @@ def train_model(embedding_model,train_input_images, train_label_images, reload_m
         embedding_model = load_model("model.hd5")
         print embedding_model
     else:
-        optimizer = define_optimizer()
-        embedding_model.compile('adam', loss='binary_crossentropy')
+        sgd = optimizers.SGD(lr=0.01)
+        embedding_model.compile(sgd, loss='binary_crossentropy')
     embedding_model.fit(train_input_images[:100], train_label_images[:100], epochs=10, batch_size=32, shuffle=True,
                         verbose=True, callbacks=[ModelCheckpoint(filepath="../working_models/model.hd5", monitor='f1',
                         verbose=0, save_best_only=False), TensorBoard(log_dir='../logs/',histogram_freq=0,
