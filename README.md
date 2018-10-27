@@ -20,10 +20,10 @@ rest of the area as pixel-value 1. So the labelled images have pixel values 0 an
     
 Example- <br>
 Input Image: <br>
-![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/img_input.jpg)
+![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/images_to_test/img_input.jpg)
     
 Labelled Image: <br>
-![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/img_11.jpg)
+![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/images_to_test/img_11.jpg)
    
 ## Model Architecture
 Takes the block 4's output from the standard vgg-16 network and uses this as
@@ -39,7 +39,7 @@ input in further architecture. The following layers is used in the whole archite
         pixel from 0-1)<br>
 
 The model architecture is shown below:<br>
-    ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/model.png)
+    ![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/images_to_test/model.png)
     
 ### Optimizer and Loss function
     
@@ -51,11 +51,11 @@ The model is trained and saved as model.hd5 file. The trained model is used to p
 
 Test Input Image:<br>
 
-![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/test_img.jpeg)
+![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/images_to_test/test_img.jpeg)
 
 Predicted Image: <br>
 
-![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/result_img.png)
+![alt text](https://github.com/apekshapriya/Text-Localization-in-Image/blob/master/images_to_test/result_img.png)
 
 Here the predicted image has masked pixels in the text area
 
