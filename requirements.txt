@@ -110,7 +110,7 @@ spacy==2.0.11
 subprocess32==3.5.2
 tb-nightly==1.12.0a20181008
 tensorboard==1.10.0
-tensorflow-gpu==1.10.0
+tensorflow-gpu==2.3.1
 tensorflow-hub==0.1.0
 tensorflow-serving-api==1.7.0
 tensorflow-tensorboard==0.4.0
